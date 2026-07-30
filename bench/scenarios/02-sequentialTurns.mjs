@@ -2,11 +2,12 @@
 // verifying no errors along the way AND that context is actually retained
 // (the CLI process is not respawned between turns — only `start` does that).
 
+import { randomInt } from 'node:crypto';
 import { openChat, startAndAsk, ask } from '../lib/chat.mjs';
 
 export default async function sequentialTurns(ctx) {
   const errors = [];
-  const secret = `SEQ-${Math.floor(Math.random() * 100000)}`;
+  const secret = `SEQ-${randomInt(100000)}`;
   const conn = await openChat(ctx);
   try {
     const turns = [];

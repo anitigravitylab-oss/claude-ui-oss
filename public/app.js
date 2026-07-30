@@ -202,9 +202,14 @@ const ICONS = {
 };
 
 function svgIcon(name) {
-  const tmp = document.createElement("span");
-  tmp.innerHTML = ICONS[name] || "";
-  return tmp.firstElementChild || document.createTextNode("");
+  const markup = Object.prototype.hasOwnProperty.call(ICONS, name) ? ICONS[name] : null;
+  if (!markup) return document.createTextNode("");
+  const parsed = new DOMParser().parseFromString(markup, "image/svg+xml");
+  const root = parsed.documentElement;
+  if (!root || root.localName !== "svg" || root.namespaceURI !== "http://www.w3.org/2000/svg") {
+    return document.createTextNode("");
+  }
+  return document.importNode(root, true);
 }
 
 function iconSpan(name, cls) {
@@ -247,29 +252,25 @@ function renderMarkdown(text) {
     globalThis.__mdStats.calls++;
     globalThis.__mdStats.chars += text ? String(text).length : 0;
   }
+  const asPlainText = () => {
+    const fragment = document.createDocumentFragment();
+    fragment.appendChild(document.createTextNode(String(text ?? "")));
+    return fragment;
+  };
+
+  if (!window.marked || !window.DOMPurify) return asPlainText();
+
   let raw;
   try {
-    raw = window.marked ? window.marked.parse(text ?? "") : escapeHtml(text ?? "");
-  } catch (e) {
-    raw = escapeHtml(text ?? "");
+    raw = window.marked.parse(text ?? "");
+  } catch {
+    return asPlainText();
   }
-  let clean;
-  if (window.DOMPurify) {
-    ensurePurifyHook();
-    clean = window.DOMPurify.sanitize(raw, PURIFY_CONFIG);
-  } else {
-    // No sanitizer available — degrade safely to plain escaped text.
-    clean = escapeHtml(text ?? "");
-  }
-  const tpl = document.createElement("template");
-  tpl.innerHTML = clean;
-  return tpl.content;
-}
-
-function escapeHtml(s) {
-  const d = document.createElement("div");
-  d.textContent = s ?? "";
-  return d.innerHTML;
+  ensurePurifyHook();
+  return window.DOMPurify.sanitize(raw, {
+    ...PURIFY_CONFIG,
+    RETURN_DOM_FRAGMENT: true,
+  });
 }
 
 /*
@@ -1673,12 +1674,19 @@ class ChatTab {
   buildGauge() {
     const wrap = document.createElement("span");
     wrap.className = "cc-gauge";
-    wrap.innerHTML =
-      '<svg viewBox="0 0 36 36" aria-hidden="true">' +
-      '<circle class="cc-gauge-track" cx="18" cy="18" r="15.5"></circle>' +
-      '<circle class="cc-gauge-value" cx="18" cy="18" r="15.5"></circle>' +
-      "</svg>" +
-      '<span class="cc-gauge-num"></span>';
+    const svgNs = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNs, "svg");
+    svg.setAttribute("viewBox", "0 0 36 36");
+    svg.setAttribute("aria-hidden", "true");
+    for (const className of ["cc-gauge-track", "cc-gauge-value"]) {
+      const circle = document.createElementNS(svgNs, "circle");
+      circle.setAttribute("class", className);
+      circle.setAttribute("cx", "18");
+      circle.setAttribute("cy", "18");
+      circle.setAttribute("r", "15.5");
+      svg.appendChild(circle);
+    }
+    wrap.append(svg, h("span", { class: "cc-gauge-num" }));
     return wrap;
   }
 
