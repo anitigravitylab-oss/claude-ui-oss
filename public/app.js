@@ -14,14 +14,9 @@ function h(tag, attrs, ...children) {
       else el.setAttribute(k, v === true ? "" : v);
     }
   }
-  for (const c of children.flat()) {
-    if (c == null) continue;
-    if (c instanceof Node) {
-      el.appendChild(c);
-    } else {
-      el.appendChild(document.createTextNode(String(c)));
-    }
-  }
+  // replaceChildren treats non-Node values as text, so dynamic strings are
+  // never parsed as markup while existing child nodes keep their order.
+  el.replaceChildren(...children.flat().filter((c) => c != null));
   return el;
 }
 
