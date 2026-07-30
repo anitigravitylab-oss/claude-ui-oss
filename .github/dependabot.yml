@@ -5,6 +5,16 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # These packages are copied byte-for-byte into public/vendor. Updating
+    # package-lock.json alone intentionally fails `npm run check`; upgrade
+    # them manually together with the vendored files, notices, and browser
+    # compatibility verification.
+    ignore:
+      - dependency-name: "@xterm/addon-fit"
+      - dependency-name: "@xterm/addon-web-links"
+      - dependency-name: "@xterm/xterm"
+      - dependency-name: "dompurify"
+      - dependency-name: "marked"
   - package-ecosystem: github-actions
     directory: /
     schedule:
