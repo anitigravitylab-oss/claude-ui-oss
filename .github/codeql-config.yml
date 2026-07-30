@@ -1,0 +1,7 @@
+name: claude-ui-codeql
+
+# Browser dependencies are byte-verified against package-lock.json and scanned
+# through their package advisories. Analyze first-party source here rather than
+# following data flow into minified third-party implementations.
+paths-ignore:
+  - public/vendor
