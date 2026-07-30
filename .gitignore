@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.*
+!.env.example
+workspace/
+.ai/tmp-*
+*.log
+bench/last-run.*
+.ai/ui-token.txt
+.ai/

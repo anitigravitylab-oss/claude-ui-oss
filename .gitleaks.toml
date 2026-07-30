@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "False positive in the upstream minified xterm.js bundle (FourKeyMap enum)"
+regexes = [
+  '''t\.TwoKeyMap=void''',
+]

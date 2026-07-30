@@ -1,0 +1,43 @@
+#cloud-config
+# =============================================================================
+# claude-ui — self-host provisioning example (Oracle Cloud "Always Free",
+# GCP e2-micro, その他の Linux VM 向け汎用 cloud-init)
+#
+# ⚠️ 重要:
+#   - このツールは「ブラウザからシェル同等の操作ができる」単一ユーザー用ツール
+#     です。ホストの 1 つの Claude ログインで動きます。公開 SaaS ではありません。
+#   - 公開インターネットに直接晒さないこと。Tailscale もしくは Caddy/リバースプロキシ
+#     経由で公開してください（docs/DEPLOY.md 参照）。
+#   - このファイルに認証情報・トークン・実ホスト名を書かないこと。
+#     ログインとトークン設定は、起動後に SSH で手動で行います。
+#   - <your-account> などのプレースホルダは自分の値に置き換えてください。
+# =============================================================================
+package_update: true
+package_upgrade: false
+packages:
+  - ca-certificates
+  - curl
+  - git
+
+runcmd:
+  # 1) Docker Engine 導入（公式 convenience script）
+  - curl -fsSL https://get.docker.com | sh
+  - systemctl enable --now docker
+
+  # 2) リポジトリ取得（自分の fork/URL に置き換える）
+  - git clone https://github.com/<your-account>/claude-ui.git /opt/claude-ui
+  - cp /opt/claude-ui/.env.example /opt/claude-ui/.env
+  - install -d -o 1000 -g 1000 /opt/claude-ui/workspace
+
+  # 3) 以降は SSH で手動（自動化しない = トークンとログインは人が設定する）:
+  #    a. /opt/claude-ui/.env を編集し CLAUDE_UI_TOKEN を長いランダム文字列に:
+  #         openssl rand -hex 32
+  #    b. cd /opt/claude-ui && docker compose build
+  #    c. 初回だけ対話ログイン（claude-auth ボリュームに保存される）:
+  #         docker compose run --rm claude-ui claude
+  #       画面の指示に従ってログイン → 終了（Ctrl-C / exit）
+  #    d. docker compose up -d
+  #    e. Tailscale か Caddy で HTTPS 公開（docs/DEPLOY.md の該当章）
+  #    f. アクセス: https://<your-host>.ts.net/#token=<設定したトークン>
+
+final_message: "claude-ui base provisioning done. Finish setup manually over SSH — see /opt/claude-ui/docs/DEPLOY.md"

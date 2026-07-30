@@ -1,0 +1,17 @@
+# Never copy host build artifacts / local state into the image.
+node_modules
+.git
+.gitignore
+.ai
+bench
+workspace
+*.log
+claude-ui.log
+.env
+.env.*
+!.env.example
+npm-debug.log*
+Dockerfile
+.dockerignore
+docker-compose.yml
+deploy

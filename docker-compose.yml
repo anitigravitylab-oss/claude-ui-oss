@@ -1,0 +1,38 @@
+# claude-ui — self-host compose file.
+#
+# ⚠️ Single-user / self-host tool. It gives a browser shell-equivalent access
+#    running as ONE Claude account (the one you log in with inside the
+#    container). Do NOT expose it directly to the public internet — put
+#    Tailscale or a reverse proxy in front. See docs/DEPLOY.md.
+services:
+  claude-ui:
+    build: .
+    image: claude-ui:local
+    container_name: claude-ui
+    # Host-side bind is localhost only by default. Publish it via Tailscale
+    # Serve or a reverse proxy rather than changing this to 0.0.0.0.
+    ports:
+      - "127.0.0.1:7681:7681"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Persist the Claude login across restarts/rebuilds. Starts empty; you
+      # populate it with a one-time interactive login (see DEPLOY.md).
+      - claude-auth:/home/node/.claude
+      # Persist Web Push VAPID keys and subscriptions separately.
+      - claude-ui-state:/home/node/.claude-ui
+      # A writable working directory you can point sessions at from the UI.
+      - ./workspace:/workspace
+    restart: unless-stopped
+    init: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 512
+
+volumes:
+  claude-auth:
+  claude-ui-state:

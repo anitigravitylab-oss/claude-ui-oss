@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude UI</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#D97757">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./vendor/xterm.css">
+<link rel="stylesheet" href="./app.css">
+<script src="./theme-init.js"></script>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <span id="logo">Claude UI</span>
+    </div>
+
+    <div id="sidebar-actions">
+      <button id="new-chat-btn" class="btn-primary-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>新しいチャット</span>
+      </button>
+      <button id="new-terminal-btn" class="btn-ghost-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span>新しいターミナル</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section-label">最近のセッション</div>
+    <div id="recent-sessions-list"></div>
+
+    <div class="sidebar-section-label">チャット</div>
+    <div id="chat-list"></div>
+
+    <div id="sidebar-footer">
+      <button id="cwd-chip" class="footer-chip" title="作業ディレクトリを変更">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span id="cwd-value" class="mono">/</span>
+      </button>
+      <div id="footer-row">
+        <button id="theme-toggle" class="footer-chip" aria-label="テーマ切替"></button>
+        <span id="claude-version" class="mono"></span>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <button id="sidebar-toggle" aria-label="メニューを開く">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div id="viewport"></div>
+  </main>
+  <div id="sidebar-scrim"></div>
+
+  <nav id="bottom-nav" aria-label="モバイルナビゲーション">
+    <button id="bn-sessions" class="bn-btn" type="button"></button>
+    <button id="bn-chat" class="bn-btn" type="button"></button>
+    <button id="bn-terminal" class="bn-btn" type="button"></button>
+    <button id="bn-actions" class="bn-btn" type="button"></button>
+  </nav>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script src="./vendor/marked.min.js"></script>
+<script src="./vendor/purify.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
