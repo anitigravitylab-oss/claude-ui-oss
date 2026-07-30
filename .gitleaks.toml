@@ -3,7 +3,7 @@ useDefault = true
 
 [[allowlists]]
 description = "False positives in the byte-verified upstream minified xterm.js enum exports"
+regexTarget = "secret"
 regexes = [
   '''t\.TwoKeyMap=void''',
-  '''t\.FourKeyMap=void''',
 ]
