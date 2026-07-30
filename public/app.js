@@ -16,7 +16,11 @@ function h(tag, attrs, ...children) {
   }
   for (const c of children.flat()) {
     if (c == null) continue;
-    el.appendChild(c instanceof Node ? c : document.createTextNode(String(c)));
+    if (c instanceof Node) {
+      el.appendChild(c);
+    } else {
+      el.appendChild(document.createTextNode(String(c)));
+    }
   }
   return el;
 }
