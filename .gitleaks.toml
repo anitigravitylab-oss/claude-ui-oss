@@ -2,7 +2,8 @@
 useDefault = true
 
 [[allowlists]]
-description = "False positive in the upstream minified xterm.js bundle (FourKeyMap enum)"
+description = "False positives in the byte-verified upstream minified xterm.js enum exports"
 regexes = [
   '''t\.TwoKeyMap=void''',
+  '''t\.FourKeyMap=void''',
 ]
