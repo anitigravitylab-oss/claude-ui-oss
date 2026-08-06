@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.0.12",
-    "hono": "^4.12.32",
+    "hono": "^4.12.34",
     "node-pty": "^1.1.0",
     "web-push": "^3.6.7",
     "ws": "^8.21.1"
